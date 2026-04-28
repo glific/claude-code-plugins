@@ -1,0 +1,13 @@
+{
+  "name": "glific-claude-plugins",
+  "owner": {
+    "name": "Vignesh Rajasekaran"
+  },
+  "plugins": [
+    {
+      "name": "dev-plugins",
+      "source": "./plugins/dev",
+      "description": "Developer skills for Glific"
+    }
+  ]
+}
