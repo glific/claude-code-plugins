@@ -28,29 +28,48 @@ If either file is unavailable, continue with available context and explicitly st
    - user-facing feature
    - bug fix
    - enhancement
-2. Extract key facts (user-facing only):
+2. Map the issue to exactly one issue category for GitHub title/labels:
+   - `security`
+   - `bug`
+   - `ops`
+   - `ci`
+   - `testing`
+   - `enhancement`
+   - `docs`
+   - `refactor`
+   - `<epic-name>`
+   If category is unclear from the blob/input, ask the user via `AskQuestion` before drafting.
+3. If the issue looks like it is part of an epic, ask the user to provide the epic name and use that value as the category label.
+4. Format the issue title as:
+   - `([<category>]: <short issue title>)`
+   - Example: `([bug]: Contact import fails for CSV with empty phone fields)`
+5. Ensure the selected category is also added as a GitHub issue label.
+6. Extract key facts (user-facing only):
    - current behavior
    - expected behavior
    - affected actors/users
    - user-visible constraints/dependencies
    - user-visible risks and unknowns
-3. Use CLAUDE.md context from both repositories to:
+7. Use CLAUDE.md context from both repositories to:
    - align terminology with project conventions
    - propose reasonable suggestions for unanswered questions
-4. Apply role-based quality checks below.
-5. If critical details are missing, ask targeted questions using the `AskQuestion` tool before drafting.
-6. Produce only the final structured issue output format.
-7. Keep the issue at a high user-facing level; avoid implementation design details unless the user explicitly asks for them.
-8. After presenting suggestions/improvements, ask for explicit final confirmation (yes/no) right before issue creation.
-9. If the user provided image attachments with the instructions, include them in the final GitHub issue body under a short `## Attachments` subsection using markdown image links (or plain links when embedding is not possible).
-10. Only after that confirmation, create the issue in `glific/glific` using `gh`:
-   - `gh issue create --repo glific/glific --title "<title>" --body "<structured markdown content>"`
-12. Confirm back with created issue URL
+8. Apply role-based quality checks below.
+9. If critical details are missing, ask targeted questions using the `AskQuestion` tool before drafting.
+10. Produce only the final structured issue output format.
+11. Keep the issue at a high user-facing level; avoid implementation design details unless the user explicitly asks for them.
+12. After presenting suggestions/improvements, ask for explicit final confirmation (yes/no) right before issue creation.
+13. If the user provided image attachments with the instructions, include them in the final GitHub issue body under a short `## Attachments` subsection using markdown image links (or plain links when embedding is not possible).
+14. Only after that confirmation, create the issue in `glific/glific` using `gh`:
+   - `gh issue create --repo glific/glific --title "([<category>]: <title>)" --body "<structured markdown content>" --label "<category>"`
+15. Confirm back with created issue URL
 
 ## GitHub issue management rules (must enforce)
 
 - Do not create a GitHub issue unless the user has explicitly confirmed issue creation in the current chat turn.
 - Always create the issue in the `glific/glific` repository (not `glific/glific-frontend` unless the user explicitly overrides this).
+- Always require exactly one category from: `security`, `bug`, `ops`, `ci`, `testing`, `enhancement`, `docs`, `refactor`, or `<epic-name>`.
+- Always format the final title as `([<category>]: <short issue title>)`.
+- Always add the same category as a GitHub label when creating the issue.
 - Preserve the final structured markdown sections in the issue body.
 - If the user shared image attachments, include them in the issue body as attachment links/images.
 

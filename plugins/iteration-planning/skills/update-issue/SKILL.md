@@ -32,29 +32,48 @@ If either file is unavailable, continue with available context and explicitly st
    - user-facing feature
    - bug fix
    - enhancement
-5. Extract key facts (user-facing only):
+5. Map the issue to exactly one issue category for GitHub title/labels:
+   - `security`
+   - `bug`
+   - `ops`
+   - `ci`
+   - `testing`
+   - `enhancement`
+   - `docs`
+   - `refactor`
+   - `<epic-name>`
+   If category is unclear from the existing issue/user input, ask the user via `AskQuestion` before drafting.
+6. If the issue looks like it is part of an epic, ask the user to provide the epic name and use that value as the category label.
+7. Format the issue title as:
+   - `([<category>]: <short issue title>)`
+   - Example: `([bug]: Contact import fails for CSV with empty phone fields)`
+8. Ensure the selected category is also added as a GitHub issue label.
+9. Extract key facts (user-facing only):
    - current behavior
    - expected behavior
    - affected actors/users
    - user-visible constraints/dependencies
    - user-visible risks and unknowns
-6. Use CLAUDE.md context from both repositories to:
+10. Use CLAUDE.md context from both repositories to:
    - align terminology with project conventions
    - propose reasonable suggestions for unanswered questions
-7. Apply role-based quality checks below.
-8. If critical details are missing, ask targeted questions using the `AskQuestion` tool before drafting.
-9. Produce only the final structured issue output format preview.
-10. Keep the issue at a high user-facing level; avoid implementation design details unless the user explicitly asks for them.
-11. Ask for explicit final confirmation (yes/no) right before updating the GitHub issue.
-12. Only after confirmation, update the same issue in `glific/glific` using `gh`:
-   - `gh issue edit <issue-number> --repo glific/glific --title "<updated title>" --body "<structured markdown content>"`
-13. Confirm back with the updated issue URL.
+11. Apply role-based quality checks below.
+12. If critical details are missing, ask targeted questions using the `AskQuestion` tool before drafting.
+13. Produce only the final structured issue output format preview.
+14. Keep the issue at a high user-facing level; avoid implementation design details unless the user explicitly asks for them.
+15. Ask for explicit final confirmation (yes/no) right before updating the GitHub issue.
+16. Only after confirmation, update the same issue in `glific/glific` using `gh`:
+   - `gh issue edit <issue-number> --repo glific/glific --title "([<category>]: <updated title>)" --body "<structured markdown content>" --add-label "<category>"`
+17. Confirm back with the updated issue URL.
 
 ## GitHub issue management rules (must enforce)
 
 - Do not update a GitHub issue unless the user has explicitly confirmed issue update in the current chat turn.
 - Always read the existing issue content from GitHub first; do not ask the user to paste the existing issue description unless issue access fails.
 - Always update the issue in the `glific/glific` repository unless the user explicitly overrides this.
+- Always require exactly one category from: `security`, `bug`, `ops`, `ci`, `testing`, `enhancement`, `docs`, `refactor`, or `<epic-name>`.
+- Always format the final title as `([<category>]: <short issue title>)`.
+- Always ensure the same category label exists on the issue after update.
 - Preserve the final structured markdown sections in the issue body.
 - If the existing issue body contains image attachments, retain them under a short `## Attachments` subsection using markdown image links (or plain links when embedding is not possible).
 

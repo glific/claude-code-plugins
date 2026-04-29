@@ -39,6 +39,50 @@ Install this plugin through Claude Code marketplace commands (GitHub repo source
    /reload-plugins
    ```
 
+## Upgrade marketplace and plugin
+
+When plugin metadata changes, refresh marketplace data and reinstall/update the plugin:
+
+1. Refresh marketplace metadata:
+
+   ```bash
+   /plugin marketplace update glific-claude-plugins
+   ```
+
+2. Reinstall or upgrade the plugin:
+
+   ```bash
+   /plugin install iteration-planning-plugins@glific-claude-plugins
+   ```
+
+3. Reload plugins in the current session:
+
+   ```bash
+   /reload-plugins
+   ```
+
+## Add local marketplace for testing
+
+Use a local checkout as a marketplace source while validating plugin changes:
+
+1. Add the local marketplace path:
+
+   ```bash
+   /plugin marketplace add /absolute/path/to/claude-code-plugins
+   ```
+
+2. Install the plugin from that local marketplace entry:
+
+   ```bash
+   /plugin install iteration-planning-plugins@claude-code-plugins
+   ```
+
+3. Reload plugins after each local change:
+
+   ```bash
+   /reload-plugins
+   ```
+
 ## Use
 
 Run a skill from the installed plugin:
