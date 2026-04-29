@@ -60,7 +60,7 @@ If either file is unavailable, continue with available context and explicitly st
 12. After presenting suggestions/improvements, ask for explicit final confirmation (yes/no) right before issue creation.
 13. If the user provided image attachments with the instructions, include them in the final GitHub issue body under a short `## Attachments` subsection using markdown image links (or plain links when embedding is not possible).
 14. Only after that confirmation, create the issue in `glific/glific` using `gh`:
-   - `gh issue create --repo glific/glific --title "([<category>]: <title>)" --body "<structured markdown content>" --label "<category>"`
+   - `gh issue create --repo glific/glific --title "[<category>]: <title>" --body "<structured markdown content>" --label "<category>"`
 15. Confirm back with created issue URL
 
 ## GitHub issue management rules (must enforce)
@@ -68,7 +68,7 @@ If either file is unavailable, continue with available context and explicitly st
 - Do not create a GitHub issue unless the user has explicitly confirmed issue creation in the current chat turn.
 - Always create the issue in the `glific/glific` repository (not `glific/glific-frontend` unless the user explicitly overrides this).
 - Always require exactly one category from: `security`, `bug`, `ops`, `ci`, `testing`, `enhancement`, `docs`, `refactor`, or `<epic-name>`.
-- Always format the final title as `([<category>]: <short issue title>)`.
+- Always format the final title as `[<category>]: <short issue title>`.
 - Always add the same category as a GitHub label when creating the issue.
 - Preserve the final structured markdown sections in the issue body.
 - If the user shared image attachments, include them in the issue body as attachment links/images.

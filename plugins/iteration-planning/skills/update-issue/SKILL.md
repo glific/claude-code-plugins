@@ -63,7 +63,7 @@ If either file is unavailable, continue with available context and explicitly st
 14. Keep the issue at a high user-facing level; avoid implementation design details unless the user explicitly asks for them.
 15. Ask for explicit final confirmation (yes/no) right before updating the GitHub issue.
 16. Only after confirmation, update the same issue in `glific/glific` using `gh`:
-   - `gh issue edit <issue-number> --repo glific/glific --title "([<category>]: <updated title>)" --body "<structured markdown content>" --add-label "<category>"`
+   - `gh issue edit <issue-number> --repo glific/glific --title "[<category>]: <updated title>" --body "<structured markdown content>" --add-label "<category>"`
 17. Confirm back with the updated issue URL.
 
 ## GitHub issue management rules (must enforce)
@@ -72,7 +72,7 @@ If either file is unavailable, continue with available context and explicitly st
 - Always read the existing issue content from GitHub first; do not ask the user to paste the existing issue description unless issue access fails.
 - Always update the issue in the `glific/glific` repository unless the user explicitly overrides this.
 - Always require exactly one category from: `security`, `bug`, `ops`, `ci`, `testing`, `enhancement`, `docs`, `refactor`, or `<epic-name>`.
-- Always format the final title as `([<category>]: <short issue title>)`.
+- Always format the final title as `[<category>]: <short issue title>`.
 - Always ensure the same category label exists on the issue after update.
 - Preserve the final structured markdown sections in the issue body.
 - If the existing issue body contains image attachments, retain them under a short `## Attachments` subsection using markdown image links (or plain links when embedding is not possible).
