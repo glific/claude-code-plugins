@@ -1,17 +1,18 @@
 ---
-name: ad-hoc-issue
-description: Convert a user-provided issue blob into a structured issue with Description and Acceptance Criteria using Glific project context from CLAUDE.md files. Use when users share rough bug/enhancement/feature text and need a production-ready issue draft.
+name: update-issue
+description: Read an existing GitHub issue, convert its current Description and Acceptance Criteria into a structured, user-facing issue format using Glific project context from CLAUDE.md files, ask for confirmation, then update the same issue in GitHub.
 ---
 
-# Ad Hoc Issue Structuring
+# Update Ad Hoc Issue Structuring
 
 ## When to use
 
-Use this skill when the user shares an unstructured blob of text describing a problem, bug, enhancement, or feature request and wants it converted into a structured issue.
+Use this skill when an issue already exists on GitHub and the user wants the issue body rewritten into a clear, structured format without asking the user to manually re-enter the issue content.
 
 ## Inputs
 
-- A free-form text blob from the user that explains the issue.
+- An existing GitHub issue reference (issue number or URL).
+- Optional user instructions about what should be changed in the issue.
 
 ## Required context gathering
 
@@ -24,35 +25,38 @@ If either file is unavailable, continue with available context and explicitly st
 
 ## Workflow
 
-1. Parse the blob and classify the issue as one (or more) of:
+1. Resolve the target issue in `glific/glific` from the reference provided by the user.
+2. Read the current issue title and body from GitHub using `gh issue view`.
+3. Treat the current issue description/body as the primary input blob (instead of asking the user to paste issue text).
+4. Parse the existing content and classify the issue as one (or more) of:
    - user-facing feature
    - bug fix
    - enhancement
-2. Extract key facts (user-facing only):
+5. Extract key facts (user-facing only):
    - current behavior
    - expected behavior
    - affected actors/users
    - user-visible constraints/dependencies
    - user-visible risks and unknowns
-3. Use CLAUDE.md context from both repositories to:
+6. Use CLAUDE.md context from both repositories to:
    - align terminology with project conventions
    - propose reasonable suggestions for unanswered questions
-4. Apply role-based quality checks below.
-5. If critical details are missing, ask targeted questions using the `AskQuestion` tool before drafting.
-6. Produce only the final structured issue output format.
-7. Keep the issue at a high user-facing level; avoid implementation design details unless the user explicitly asks for them.
-8. After presenting suggestions/improvements, ask for explicit final confirmation (yes/no) right before ticket creation.
-9. If the user provided image attachments with the instructions, include them in the final GitHub issue body under a short `## Attachments` subsection using markdown image links (or plain links when embedding is not possible).
-10. Only after that confirmation, create the issue in `glific/glific` using `gh`:
-   - `gh issue create --repo glific/glific --title "<title>" --body "<structured markdown content>"`
-12. Confirm back with created issue URL
+7. Apply role-based quality checks below.
+8. If critical details are missing, ask targeted questions using the `AskQuestion` tool before drafting.
+9. Produce only the final structured issue output format preview.
+10. Keep the issue at a high user-facing level; avoid implementation design details unless the user explicitly asks for them.
+11. Ask for explicit final confirmation (yes/no) right before updating the GitHub issue.
+12. Only after confirmation, update the same issue in `glific/glific` using `gh`:
+   - `gh issue edit <issue-number> --repo glific/glific --title "<updated title>" --body "<structured markdown content>"`
+13. Confirm back with the updated issue URL.
 
-## GitHub ticketing rules (must enforce)
+## GitHub issue management rules (must enforce)
 
-- Do not create a GitHub issue unless the user has explicitly confirmed issue creation in the current chat turn.
-- Always create the issue in the `glific/glific` repository (not `glific/glific-frontend` unless the user explicitly overrides this).
+- Do not update a GitHub issue unless the user has explicitly confirmed issue update in the current chat turn.
+- Always read the existing issue content from GitHub first; do not ask the user to paste the existing issue description unless issue access fails.
+- Always update the issue in the `glific/glific` repository unless the user explicitly overrides this.
 - Preserve the final structured markdown sections in the issue body.
-- If the user shared image attachments, include them in the issue body as attachment links/images.
+- If the existing issue body contains image attachments, retain them under a short `## Attachments` subsection using markdown image links (or plain links when embedding is not possible).
 
 ## Role-based checks (must enforce)
 
@@ -79,7 +83,7 @@ If either file is unavailable, continue with available context and explicitly st
 
 ## Handling missing information
 
-For any question not answered by the user blob or role requirements:
+For any question not answered by the existing issue body, optional user instructions, or role requirements:
 
 1. Use insights from the Glific `CLAUDE.md` files.
 2. Ask the user for missing details using the `AskQuestion` tool (do not ask in plain text when `AskQuestion` is available).
@@ -101,7 +105,7 @@ For any question not answered by the user blob or role requirements:
   - expected behavior and success conditions
   - rollout constraints (feature flag, backwards compatibility, migration risk)
   - QA scope (edge/failure cases)
-- Avoid asking for information already inferable from the blob or `CLAUDE.md`.
+- Avoid asking for information already inferable from the issue body or `CLAUDE.md`.
 - Do not ask speculative or low-value preference questions.
 
 ## Output format (STRICTLY FOLLOW THIS FORMAT)

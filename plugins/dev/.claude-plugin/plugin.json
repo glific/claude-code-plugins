@@ -1,8 +1,0 @@
-{
-  "name": "dev-plugins",
-  "description": "Developer plugins for Glific",
-  "version": "0.5.1",
-  "author": {
-    "name": "Vignesh Rajasekaran"
-  }
-}
