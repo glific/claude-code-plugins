@@ -1,0 +1,133 @@
+---
+name: update-ad-hoc-issue
+description: Read an existing GitHub issue, convert its current Description and Acceptance Criteria into a structured, user-facing issue format using Glific project context from CLAUDE.md files, ask for confirmation, then update the same issue in GitHub.
+---
+
+# Update Ad Hoc Issue Structuring
+
+## When to use
+
+Use this skill when an issue already exists on GitHub and the user wants the issue body rewritten into a clear, structured format without asking the user to manually re-enter the issue content.
+
+## Inputs
+
+- An existing GitHub issue reference (issue number or URL).
+- Optional user instructions about what should be changed in the issue.
+
+## Required context gathering
+
+Before producing the structured issue, fetch and use project context from:
+
+- `https://raw.githubusercontent.com/glific/glific/refs/heads/master/CLAUDE.md`
+- `https://raw.githubusercontent.com/glific/glific-frontend/refs/heads/master/CLAUDE.md`
+
+If either file is unavailable, continue with available context and explicitly state assumptions in your internal reasoning.
+
+## Workflow
+
+1. Resolve the target issue in `glific/glific` from the reference provided by the user.
+2. Read the current issue title and body from GitHub using `gh issue view`.
+3. Treat the current issue description/body as the primary input blob (instead of asking the user to paste issue text).
+4. Parse the existing content and classify the issue as one (or more) of:
+   - user-facing feature
+   - bug fix
+   - enhancement
+5. Extract key facts (user-facing only):
+   - current behavior
+   - expected behavior
+   - affected actors/users
+   - user-visible constraints/dependencies
+   - user-visible risks and unknowns
+6. Use CLAUDE.md context from both repositories to:
+   - align terminology with project conventions
+   - propose reasonable suggestions for unanswered questions
+7. Apply role-based quality checks below.
+8. If critical details are missing, ask targeted questions using the `AskQuestion` tool before drafting.
+9. Produce only the final structured issue output format preview.
+10. Keep the issue at a high user-facing level; avoid implementation design details unless the user explicitly asks for them.
+11. Ask for explicit final confirmation (yes/no) right before updating the GitHub issue.
+12. Only after confirmation, update the same issue in `glific/glific` using `gh`:
+   - `gh issue edit <issue-number> --repo glific/glific --title "<updated title>" --body "<structured markdown content>"`
+13. Confirm back with the updated issue URL.
+
+## GitHub ticketing rules (must enforce)
+
+- Do not update a GitHub issue unless the user has explicitly confirmed issue update in the current chat turn.
+- Always read the existing issue content from GitHub first; do not ask the user to paste the existing issue description unless issue access fails.
+- Always update the issue in the `glific/glific` repository unless the user explicitly overrides this.
+- Preserve the final structured markdown sections in the issue body.
+- If the existing issue body contains image attachments, retain them under a short `## Attachments` subsection using markdown image links (or plain links when embedding is not possible).
+
+## Role-based checks (must enforce)
+
+### Product Manager
+
+- If the issue is user-facing, include:
+  - a feature flag requirement (name it if possible)
+  - metrics to measure usage/adoption
+- If the issue is a bug fix, include:
+  - explicit conditions to reproduce/simulate the bug
+  - expected behavior after the fix
+
+### Tech Lead
+
+- Keep requirements outcome-focused and user-facing.
+- Do not include implementation split sections such as backend requirements, frontend requirements, API changes, DB changes, or architecture breakdowns.
+
+### QA
+
+- Ensure acceptance criteria covers:
+  - happy path
+  - edge cases
+  - failure/validation scenarios where relevant
+
+## Handling missing information
+
+For any question not answered by the existing issue body, optional user instructions, or role requirements:
+
+1. Use insights from the Glific `CLAUDE.md` files.
+2. Ask the user for missing details using the `AskQuestion` tool (do not ask in plain text when `AskQuestion` is available).
+3. Ask only high-signal questions that materially affect user impact, scope, or acceptance criteria.
+4. Keep the questionnaire short:
+   - prefer 1-5 questions
+   - use clear, mutually exclusive options
+   - allow multi-select only when truly required
+5. If a required detail is still unavailable after asking:
+   - make a conservative assumption aligned with project conventions
+   - clearly encode that assumption in the issue description or acceptance criteria
+6. Propose practical suggestions that fit project conventions.
+7. Convert those suggestions into explicit acceptance criteria statements where appropriate.
+
+## Question quality rubric (for `AskQuestion`)
+
+- Prioritize questions that unblock:
+  - user impact and target persona
+  - expected behavior and success conditions
+  - rollout constraints (feature flag, backwards compatibility, migration risk)
+  - QA scope (edge/failure cases)
+- Avoid asking for information already inferable from the issue body or `CLAUDE.md`.
+- Do not ask speculative or low-value preference questions.
+
+## Output format (STRICTLY FOLLOW THIS FORMAT)
+
+Return only:
+
+```markdown
+## Description
+...
+
+## User Flow
+...
+
+## Acceptance Criteria
+...
+
+## Edge cases
+...
+```
+
+# Guidelines
+- Do not add extra sections.
+- Do not create sections like "Backend Requirements", "Frontend Requirements", "Technical Requirements", or any implementation-specific breakdown.
+- Keep all content high-level and user-facing.
+- Do not ask follow-up questions unless absolutely required to avoid unsafe or invalid assumptions.
