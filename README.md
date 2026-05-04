@@ -18,7 +18,7 @@ Install this plugin through Claude Code marketplace commands (GitHub repo source
 1. Add this repository as a marketplace:
 
    ```bash
-   /plugin marketplace add <your-org-or-user>/claude-code-plugins
+   /plugin marketplace add glific/claude-code-plugins
    ```
 
 2. Open the plugin manager and install `iteration-planning-plugins` from the **Discover** tab:
@@ -30,7 +30,7 @@ Install this plugin through Claude Code marketplace commands (GitHub repo source
    Or install directly by name:
 
    ```bash
-   /plugin install iteration-planning-plugins@glific-claude-plugins
+   /plugin install iteration-planning@glific-claude-plugins
    ```
 
 3. Reload plugins in the current session:
@@ -46,13 +46,13 @@ When plugin metadata changes, refresh marketplace data and reinstall/update the 
 1. Refresh marketplace metadata:
 
    ```bash
-   /plugin marketplace update glific-claude-plugins
+   /plugin marketplace update claude-code-plugins
    ```
 
 2. Reinstall or upgrade the plugin:
 
    ```bash
-   /plugin install iteration-planning-plugins@glific-claude-plugins
+   /plugin install iteration-planning@claude-code-plugins
    ```
 
 3. Reload plugins in the current session:
@@ -74,7 +74,7 @@ Use a local checkout as a marketplace source while validating plugin changes:
 2. Install the plugin from that local marketplace entry:
 
    ```bash
-   /plugin install iteration-planning-plugins@claude-code-plugins
+   /plugin install iteration-planning@claude-code-plugins
    ```
 
 3. Reload plugins after each local change:
